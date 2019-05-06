@@ -2,7 +2,7 @@ import copy
 import math
 prof = 6
 #test
-tailleM = 3
+tailleM = 15
 tour = 1
 def Actions(Matrice, tailleM,tour):
     valeur = []
@@ -52,74 +52,51 @@ def Result(Matrice, i,j,jou):
     Matrice[i][j]=jou
     return Matrice
 def Utility(Matrice, tailleM,jou):
-    
+    diags = diagonals(Matrice, tailleM)
+    cols = columns(Matrice, tailleM)
     points = 0
-    for i in range(tailleM):
-        if columns(Matrice, tailleM)[i].count(jou) == 2:
-            points +=10
-        if diagonals(Matrice, tailleM)[i%2].count(jou) == 2:
-            points +=10
-        for j in range(tailleM):
-            #ligne(droite vers gauche)
-            for y1 in range(j, 0,-1):
-                    if(Matrice[i][y1]==jou):
-                        points+=1
-                    if(Matrice[i][y1]!=jou & Matrice[i][y1]!=0):
-                        points-=2
-                    if(Matrice[i][y1]==0):
-                        points+=1
-            
-            #colonne(bas vers haut)
-            for x1 in range(i, 0,-1):
-                    if(Matrice[x1][j]==jou):
-                        points+=1
-                    if(Matrice[x1][j]!=jou & Matrice[x1][j]!=0):
-                        points-=2
-                    if(Matrice[x1][j]==0):
-                        points+=1
-            #ligne (gauche vers droite)
-            for y1 in range(j, tailleM):
-                if(Matrice[i][y1]==jou):
-                    points+=1
-                if(Matrice[i][y1]!=jou & Matrice[i][y1]!=0):
-                    points-=2
-                if(Matrice[i][y1]==0):
-                    points+=1
-            #colonne(haut vers bas)
-            for x1 in range(i, tailleM):
-                if(Matrice[x1][j]==jou):
-                    points +=1
-                if(Matrice[x1][j]!=jou & Matrice[x1][j]!=0):
-                    points-=2
-                if(Matrice[x1][j]==0):
-                        points+=1
-            #diagonale(gauche vers droite)
-            if(i !=2 or j!=2):
-                for x in range(i,tailleM):
-                    for y in range(tailleM):
-                        if(j+y <tailleM):
-                            if(Matrice[x][j+y]==jou):
-                                points +=1
-                            if(Matrice[x][j+y]!=jou & Matrice[x][j+y]!=0):
-                                points-=2
-                            if(Matrice[x][j+y]==0):
-                                points+=1
-            #diagonale(droite vers gauche)
-            if(i !=2 or j!=2):
-                for y in range(j,0,-1):
-                    for x in range(tailleM):
-                        if(i-x >0):
-                            if(Matrice[i-x][y]==jou):
-                                points +=1
-                            if(Matrice[i-x][y]!=jou & Matrice[i-x][y]!=0):
-                                points-=2
-                            if(Matrice[i-x][y]==0):
-                                points+=1
-    if(vainqueur(Matrice, jou)==True):
+    for elem in diags:
+        count = 0
+        for x in elem:
+            if(x == jou):
+                points +=1
+                count +=1
+            if(x !=jou):
+                points -=1
+                count=0
+            for i in range(2,4):
+                if(count == i):
+
+                    points += 20*i
+    for elem in cols:
+        
+        for x in elem:
+            if(x == jou):
+                points +=1
+                count +=1
+            if(x !=jou):
+                points -=1
+                count=0
+            for i in range(2,4):
+                if(count == i):
+
+                    points += 20*i
+    for elem in Matrice:
+        
+        for x in elem:
+            if(x == jou):
+                points +=1
+                count +=1
+            if(x !=jou):
+                points -=1
+                count=0
+            for i in range(2,4):
+                if(count == i):
+
+                    points += 20*i
+    if(TerminalTest(Matrice)==True):
         points += 80
     
-    if(vainqueur(Matrice,jou)==False):
-        points -= 30
     
     return points
 
@@ -232,19 +209,18 @@ def Main():
     
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
     result = False
-    
+    tour = 1
     while result==False:   
         
-        temp = MiniMaxDecision(copy.deepcopy(Matrice), tailleM,0,0,tour)
+        temp = MiniMaxDecision(copy.deepcopy(Matrice), tailleM,0,0,copy.deepcopy(tour))
         Matrice = Result(Matrice,temp[1],temp[2],1)
         printMat(Matrice, tailleM)
         result = TerminalTest(Matrice)
         userinput(Matrice, tailleM)
         printMat(Matrice, tailleM)
         result = TerminalTest(Matrice)
-    if vainqueur(Matrice,1): win =1
-    if vainqueur(Matrice,2): win =2
-    print(win)   
+        tour +=1
+    
     printMat(Matrice, tailleM)       
 def userinput(Matrice,tailleM):
     x = input("Coordonées X de votre choix ?")

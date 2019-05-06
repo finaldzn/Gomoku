@@ -3,8 +3,8 @@ tailleM = 15
 def printMat(Matrice, tailleM):
     for i in range(tailleM):
         print([Matrice[i][j] for j in range(tailleM)])
-def TerminalTest(Matrice):
-    jou =1
+def TerminalTest(Matrice, jou):
+    
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
     for elem in diags:
