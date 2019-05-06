@@ -1,7 +1,15 @@
 import copy
+tailleM = 15
 def printMat(Matrice, tailleM):
     for i in range(tailleM):
         print([Matrice[i][j] for j in range(tailleM)])
+def TerminalTest(Matrice):
+    jou =1
+    diags = diagonals(Matrice, tailleM)
+    cols = columns(Matrice, tailleM)
+    if [jou, jou, jou, jou, jou] in diags or [jou, jou, jou, jou, jou] in cols or [jou, jou, jou, jou, jou] in Matrice:
+        return True
+    return False
 def diagonals(Matrice, tailleM):
     diags =[]
     diag = []
@@ -22,12 +30,12 @@ def diagonals(Matrice, tailleM):
 
     return diags
 def Main():
-    tailleM = 15
+   
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
+    for i in range(0,6):
+        Matrice[i][i] == 1
     
-    Matrice[0][10]= 1
-    Matrice[1][7]= 1
     printMat(Matrice, tailleM)
-    print(diagonals(Matrice,tailleM))
+    print(TerminalTest(Matrice))
     
 Main()
