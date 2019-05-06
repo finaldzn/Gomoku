@@ -7,8 +7,24 @@ def TerminalTest(Matrice):
     jou =1
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
-    if [jou, jou, jou, jou, jou] in diags or [jou, jou, jou, jou, jou] in cols or [jou, jou, jou, jou, jou] in Matrice:
-        return True
+    for elem in diags:
+        count = 0
+        for x in elem:
+            if(x == jou):
+                count +=1
+            if(x !=jou):
+                count =0
+            if(count == 5):
+                return True
+    for elem in cols:
+        count = 0
+        for x in elem:
+            if(x == jou):
+                count +=1
+            if(x !=jou):
+                count =0
+            if(count == 5):
+                return True
     return False
 def diagonals(Matrice, tailleM):
     diags =[]
@@ -41,8 +57,8 @@ def columns(Matrice, tailleM):
 def Main():
    
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
-    for i in range(0,6):
-        Matrice[i][i] == 1
+    for i in range(0,5):
+        Matrice[i][i] = 1
     
     printMat(Matrice, tailleM)
     print(TerminalTest(Matrice))

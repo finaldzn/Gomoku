@@ -141,35 +141,39 @@ def vainqueur(Matrice, joueur):
         return True
     else:
         return False
+
 def TerminalTest(Matrice):
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
-    win = 0
-    count = 0
-    count2 =0
-    for jou in range(1,tailleM):
-        var = [jou for elem in range(tailleM)]
-        
-        for i in range(tailleM):
-            if Matrice[i].count(jou)==tailleM:
-                win = jou
-                break
-            if Matrice[i].count(jou)==tailleM-1 and Matrice[i].count(0)==0:
-                count +=1
-                if count ==tailleM:
-                    win =3
-                    break
-            if cols[i].count(jou)==tailleM-1 and cols[i].count(0)==0:
-                count2 +=1
-                if count2 ==3:
-                    win =3
-                    break     
-        if  var in diags or var in cols or var in Matrice:
-            win = jou
-            break
-        
-
-    return win
+    for jou in [1,2]:
+        for elem in diags:
+            count = 0
+            for x in elem:
+                if(x == jou):
+                    count +=1
+                if(x !=jou):
+                    count =0
+                if(count == 5):
+                    return True
+        for elem in cols:
+            count = 0
+            for x in elem:
+                if(x == jou):
+                    count +=1
+                if(x !=jou):
+                    count =0
+                if(count == 5):
+                    return True
+        for elem in Matrice:
+            count = 0
+            for x in elem:
+                if(x == jou):
+                    count +=1
+                if(x !=jou):
+                    count =0
+                if(count == 5):
+                    return True
+    return False
 def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour):
     if(TerminalTest(Matrice) or profondeur == prof):
         return Utility(Matrice, tailleM,jou[p])
