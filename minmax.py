@@ -1,6 +1,7 @@
 import copy
 import math
 prof = 6
+#test
 tailleM = 3
 tour = 1
 def Actions(Matrice, tailleM,tour):
