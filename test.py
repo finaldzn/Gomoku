@@ -1,28 +1,33 @@
-
+import copy
 def printMat(Matrice, tailleM):
     for i in range(tailleM):
         print([Matrice[i][j] for j in range(tailleM)])
-def Actions(Matrice, tailleM,tour):
-    valeur = []
-    if(tour >3):
-        for i in range(tailleM):
-            for j in range(tailleM):
-                if Matrice[i][j]==0:
-                    valeur.append([i,j])
-    if(tour == 1):
-        valeur.append([7,7])
-    if(tour == 3):
-        for i in range(tailleM):
-            for j in range(tailleM):
-                if Matrice[i][j]==0 and ((i   in [ e for e in range(3,10)] or j  in [e for e in range(3,10)] )== False):
-                    valeur.append([i,j])
-    return valeur
+def diagonals(Matrice, tailleM):
+    diags =[]
+    diag = []
+    for i in range(0,tailleM):
+        diag.append(Matrice[i][i])
+    diags.append(copy.deepcopy(diag))
+    diag.clear()
+    j= 0
+    for i in range(tailleM-1,-1,-1):
+        diag.append(Matrice[i][j])
+        j +=1
+    diags.append(copy.deepcopy(diag))
+    for offset in range(tailleM):
+        diag = [ row[i+offset] for i,row in enumerate(Matrice) if 0 <= i+offset < len(row)]
+        diags.append(copy.deepcopy(diag))
+        diag.clear()
+    diag.clear()
+
+    return diags
 def Main():
     tailleM = 15
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
+    
+    Matrice[0][10]= 1
+    Matrice[1][7]= 1
     printMat(Matrice, tailleM)
-    print(Actions(Matrice,tailleM,1))
-    print(Actions(Matrice,tailleM,2))
-    print(Actions(Matrice,tailleM,3))
-    print(Actions(Matrice,tailleM,4))
+    print(diagonals(Matrice,tailleM))
+    
 Main()

@@ -39,6 +39,10 @@ def diagonals(Matrice, tailleM):
         diag.append(Matrice[i][j])
         j +=1
     diags.append(copy.deepcopy(diag))
+    for offset in range(tailleM):
+        diag = [ row[i+offset] for i,row in enumerate(Matrice) if 0 <= i+offset < len(row)]
+        diags.append(copy.deepcopy(diag))
+        diag.clear()
     diag.clear()
 
     return diags
