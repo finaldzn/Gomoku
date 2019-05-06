@@ -1,7 +1,6 @@
 import copy
 import math
-prof = 6
-#test
+prof = 15
 tailleM = 15
 tour = 1
 def Actions(Matrice, tailleM,tour):
@@ -61,12 +60,11 @@ def Utility(Matrice, tailleM,jou):
             if(x == jou):
                 points +=1
                 count +=1
-            if(x !=jou):
+            if(x !=jou & x !=0):
                 points -=1
                 count=0
             for i in range(2,4):
                 if(count == i):
-
                     points += 20*i
     for elem in cols:
         
@@ -74,7 +72,7 @@ def Utility(Matrice, tailleM,jou):
             if(x == jou):
                 points +=1
                 count +=1
-            if(x !=jou):
+            if(x !=jou & x !=0):
                 points -=1
                 count=0
             for i in range(2,4):
@@ -87,7 +85,7 @@ def Utility(Matrice, tailleM,jou):
             if(x == jou):
                 points +=1
                 count +=1
-            if(x !=jou):
+            if(x !=jou & x !=0):
                 points -=1
                 count=0
             for i in range(2,4):
@@ -216,6 +214,7 @@ def Main():
         Matrice = Result(Matrice,temp[1],temp[2],1)
         printMat(Matrice, tailleM)
         result = TerminalTest(Matrice)
+        tour +=1
         userinput(Matrice, tailleM)
         printMat(Matrice, tailleM)
         result = TerminalTest(Matrice)
