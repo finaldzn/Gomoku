@@ -29,6 +29,15 @@ def diagonals(Matrice, tailleM):
     diag.clear()
 
     return diags
+def columns(Matrice, tailleM):
+    cols =[]
+    col=[]
+    for i in range(0,tailleM):
+        for j in range(0,tailleM):
+            col.append(Matrice[j][i])
+        cols.append(copy.deepcopy(col))
+        col.clear()
+    return cols   
 def Main():
    
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
