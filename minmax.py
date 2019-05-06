@@ -23,7 +23,7 @@ def columns(Matrice, tailleM):
     col=[]
     for i in range(0,tailleM):
         for j in range(0,tailleM):
-            col.append(Matrice[j][i])
+            col.append([Matrice[j][i],j,i])
         cols.append(copy.deepcopy(col))
         col.clear()
     return cols   
@@ -31,16 +31,16 @@ def diagonals(Matrice, tailleM):
     diags =[]
     diag = []
     for i in range(0,tailleM):
-        diag.append(Matrice[i][i])
+        diag.append([Matrice[i][i],i,i])
     diags.append(copy.deepcopy(diag))
     diag.clear()
     j= 0
     for i in range(tailleM-1,-1,-1):
-        diag.append(Matrice[i][j])
+        diag.append([Matrice[i][j],i,j])
         j +=1
     diags.append(copy.deepcopy(diag))
     for offset in range(tailleM):
-        diag = [ row[i+offset] for i,row in enumerate(Matrice) if 0 <= i+offset < len(row)]
+        diag = [ [row[i+offset],i,i+offset] for i,row in enumerate(Matrice) if 0 <= i+offset < len(row)]
         diags.append(copy.deepcopy(diag))
         diag.clear()
     diag.clear()
@@ -56,55 +56,142 @@ def ThreatSearch(Matrice, tailleM, jou):
                 count +=1
             if Matrice[i][j] !=jou:
                 if(count == 4):                        
-                   return [1000000000,i,j]               
+                   return [1000000000,i,j]
+                if(count == 3):                        
+                   return [1000000,i,j]
+                count = 0
+    for elem in diags:
+        count=0
+        for x in elem:
+            
+            if x[0] == jou:                    
+                count +=1
+            if x[0] !=jou:
+                if(count == 4):                        
+                   return [1000000000,x[1],x[2]]
+                if(count == 3):                        
+                   return [1000000,i,j]
+                count=0
+    for elem in cols:
+        for x in elem:
+            count=0
+            if x[0] == jou:                    
+                count +=1
+            if x[0] !=jou:
+                if(count == 4):                        
+                   return [1000000000,x[1],x[2]]
+                if(count == 3):                        
+                   return [1000000,i,j]
+                count=0
+
     
     return [-9999999,-1,-1]
 def Result(Matrice, i,j,jou):
     Matrice[i][j]=jou
     return Matrice
 def Utility(Matrice, tailleM,jou):
+   
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
+    point = 0
     points = 0
     for elem in diags:
         count = 0
+       
         for x in elem:
-            if(x == jou):
-                points +=1
+            if(x[0] == jou):                
                 count +=1
-            if(x !=jou & x !=0):
-                points -=1
+
+            if(x[0] !=jou and x[0] !=0):
+                if count ==2:
+                    points= 100
+                if count ==3:
+                    points= 1000
+                if count ==4:
+                    points= 10000000
+                if count ==5:
+                    points= 1000000000
                 count=0
-            for i in range(2,4):
-                if(count == i):
-                    points += 20*i
+                
+            if(x[0] !=jou and x[0] ==0):
+                if count ==2:
+                    points= 1000
+                if count ==3:
+                    points= 10000
+                if count ==4:
+                    points= 10000000
+                if count ==5:
+                    points= 1000000000                
+                count=0
+    point = points
     for elem in cols:
+        count = 0
         
         for x in elem:
-            if(x == jou):
-                points +=1
+            if(x[0] == jou):                
                 count +=1
-            if(x !=jou & x !=0):
-                points -=1
+                
+            
+            if(x[0] !=jou and x[0] !=0):
+                if count ==2:
+                    points= 100
+                if count ==3:
+                    points= 1000
+                if count ==4:
+                    points= 10000000
+                if count ==5:
+                    points= 1000000000
                 count=0
-            for i in range(2,4):
-                if(count == i):
-
-                    points += 20*i
+                
+            if(x[0] !=jou and x[0] ==0):
+                if count ==2:
+                    points=1000
+                if count ==3:
+                    points= 10000
+                if count ==4:
+                    points= 10000000
+                if count ==5:
+                    points=1000000000               
+                
+                count=0
+    point = point + points        
     for elem in Matrice:
-        
+        count = 0
+        count2 = 0
         for x in elem:
-            if(x == jou):
-                points +=1
+            if(x == jou):                
                 count +=1
-            if(x !=jou & x !=0):
-                points -=1
+               
+            
+            if(x !=jou and x !=0):
+                if count ==2:
+                    points= 100
+                if count ==3:
+                    points= 1000
+                if count ==4:
+                    points= 10000
+                if count ==5:
+                    points= 100000
                 count=0
-            for i in range(2,4):
-                if(count == i):
-
-                    points += 20*i        
-    return points
+                count2 +=1
+            if(x !=jou  and x ==0):
+                if count ==2:
+                    points=1000
+                if count ==3:
+                    points= 10000
+                if count ==4:
+                    points= 100000
+                if count ==5:
+                    points=1000000
+                
+                count=0
+                
+    point = point + points              
+    if(TerminalTest(Matrice)==True):
+        point+= 100000 
+    
+    
+    return point
 def TerminalTest(Matrice):
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
@@ -223,7 +310,13 @@ def userinput(Matrice,tailleM):
         y = input("Coordonées Y de votre choix ?")
     Result(Matrice,int(x),int(y),2)
 def printMat(Matrice, tailleM):
+    print("+------------------------------------------------+")
+    print("    A  B  C  D  E  F  G  H  I  J  K  L  M  N  O")
     for i in range(tailleM):
-        print([Matrice[i][j] for j in range(tailleM)])
+        if i<10:
+            print(str(i)+"  "+str([Matrice[i][j] for j in range(tailleM)]))
+        if i >10:
+            print(str(i)+" "+str([Matrice[i][j] for j in range(tailleM)]))
+    print("+------------------------------------------------+")
 
 Main()
