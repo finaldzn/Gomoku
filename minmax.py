@@ -2,6 +2,7 @@ import copy
 import math
 prof = 6
 tailleM = 3
+tour = 1
 def Actions(Matrice, tailleM,tour):
     valeur = []
     if(tour >3 or tour == 2):
@@ -25,8 +26,7 @@ def columns(Matrice, tailleM):
             col.append(Matrice[j][i])
         cols.append(copy.deepcopy(col))
         col.clear()
-    return cols
-    
+    return cols   
 def diagonals(Matrice, tailleM):
     diags =[]
     diag = []
@@ -132,14 +132,11 @@ def vainqueur(Matrice, joueur):
     
     if [joueur, joueur, joueur] in win_Matrice:
         return True
-    if Actions(Matrice,tailleM) == []:
+    if Actions(Matrice,tailleM,tour) == []:
         return True
     else:
         return False
 def TerminalTest(Matrice):
-    return vainqueur(Matrice, 1) or vainqueur(Matrice, 2)
-def test(Matrice, tailleM):
-    
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
     win = 0
@@ -168,17 +165,15 @@ def test(Matrice, tailleM):
         
 
     return win
-
-
-def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta):
+def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour):
     if(TerminalTest(Matrice) or profondeur == prof):
         return Utility(Matrice, tailleM,jou[p])
-    res = Actions(Matrice, tailleM)
+    res = Actions(Matrice, tailleM,tour)
     best = []
     
     for x in res:
         
-        mm= MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta)
+        mm= MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1))
         if(mm > Beta):
             return mm
         
@@ -188,18 +183,16 @@ def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta):
     best = best[0]
     Alpha = best
     return best
-
-
-def MinValue(Matrice, tailleM, jou,p, profondeur, Alpha, Beta):
+def MinValue(Matrice, tailleM, jou,p, profondeur, Alpha, Beta, tour):
     if(TerminalTest(Matrice) or profondeur == prof ):
         return Utility(Matrice, tailleM,jou[p])
-    res = Actions(Matrice, tailleM)
+    res = Actions(Matrice, tailleM,tour)
     
     best = []
     
     for x in res:
        
-        mm = MaxValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta)
+        mm = MaxValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1))
         if(mm < Alpha):
             return mm
         best.append(mm)
@@ -210,16 +203,15 @@ def MinValue(Matrice, tailleM, jou,p, profondeur, Alpha, Beta):
     return best
 def takefirst(elem):
     return elem[0]
-
-def MiniMaxDecision(Matrice, tailleM,var, profondeur):
-    res = Actions(Matrice, tailleM)    
+def MiniMaxDecision(Matrice, tailleM,var, profondeur,tour):
+    res = Actions(Matrice, tailleM,tour)    
     point =[]
     jou=[1,2]
     p=var
     
     for x in res:        
         
-        mm = MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2, profondeur,math.inf,-math.inf)
+        mm = MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2, profondeur,math.inf,-math.inf,copy.deepcopy(tour+1))
         
         point.append([mm,x[0],x[1]])
     
@@ -227,7 +219,6 @@ def MiniMaxDecision(Matrice, tailleM,var, profondeur):
     print("POSSSIBILITES : ")
     print(point)
     return point[0]
-
 def Main():
     
     Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
@@ -235,7 +226,7 @@ def Main():
     
     while result==False:   
         
-        temp = MiniMaxDecision(copy.deepcopy(Matrice), tailleM,0,0)
+        temp = MiniMaxDecision(copy.deepcopy(Matrice), tailleM,0,0,tour)
         Matrice = Result(Matrice,temp[1],temp[2],1)
         printMat(Matrice, tailleM)
         result = TerminalTest(Matrice)
@@ -245,9 +236,7 @@ def Main():
     if vainqueur(Matrice,1): win =1
     if vainqueur(Matrice,2): win =2
     print(win)   
-    printMat(Matrice, tailleM)
-        
-        
+    printMat(Matrice, tailleM)       
 def userinput(Matrice,tailleM):
     x = input("Coordonées X de votre choix ?")
     y = input("Coordonées Y de votre choix ?")
