@@ -1,6 +1,6 @@
 import copy
 import math
-prof = 15
+prof = 6
 tailleM = 15
 tour = 1
 def Actions(Matrice, tailleM,tour):
@@ -46,7 +46,19 @@ def diagonals(Matrice, tailleM):
     diag.clear()
 
     return diags
-
+def ThreatSearch(Matrice, tailleM, jou):
+    diags = diagonals(Matrice, tailleM)
+    cols = columns(Matrice, tailleM)
+    for i in range(tailleM):
+        count = 0
+        for j in range(tailleM):
+            if Matrice[i][j] == jou:                    
+                count +=1
+            if Matrice[i][j] !=jou:
+                if(count == 4):                        
+                   return [1000000000,i,j]               
+    
+    return [-9999999,-1,-1]
 def Result(Matrice, i,j,jou):
     Matrice[i][j]=jou
     return Matrice
@@ -91,32 +103,8 @@ def Utility(Matrice, tailleM,jou):
             for i in range(2,4):
                 if(count == i):
 
-                    points += 20*i
-    if(TerminalTest(Matrice)==True):
-        points += 80
-    
-    
+                    points += 20*i        
     return points
-
-def vainqueur(Matrice, joueur):
-    win_Matrice = [
-        [Matrice[0][0], Matrice[0][1], Matrice[0][2]],
-        [Matrice[1][0], Matrice[1][1], Matrice[1][2]],
-        [Matrice[2][0], Matrice[2][1], Matrice[2][2]],
-        [Matrice[0][0], Matrice[1][0], Matrice[2][0]],
-        [Matrice[0][1], Matrice[1][1], Matrice[2][1]],
-        [Matrice[0][2], Matrice[1][2], Matrice[2][2]],
-        [Matrice[0][0], Matrice[1][1], Matrice[2][2]],
-        [Matrice[2][0], Matrice[1][1], Matrice[0][2]],
-    ]
-    
-    if [joueur, joueur, joueur] in win_Matrice:
-        return True
-    if Actions(Matrice,tailleM,tour) == []:
-        return True
-    else:
-        return False
-
 def TerminalTest(Matrice):
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
@@ -193,6 +181,10 @@ def MiniMaxDecision(Matrice, tailleM,var, profondeur,tour):
     jou=[1,2]
     p=var
     
+    threat = ThreatSearch(Matrice, tailleM, 2)
+    
+    if(threat != [-9999999,-1,-1]):
+        return threat
     for x in res:        
         
         mm = MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2, profondeur,math.inf,-math.inf,copy.deepcopy(tour+1))
