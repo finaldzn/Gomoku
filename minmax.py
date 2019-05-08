@@ -89,7 +89,7 @@ def ThreatSearch(Matrice, tailleM, jou):
 def Result(Matrice, i,j,jou):
     Matrice[i][j]=jou
     return Matrice
-def Utility(Matrice, tailleM,jou):
+"""def Utility(Matrice, tailleM,jou):
    
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
@@ -192,7 +192,114 @@ def Utility(Matrice, tailleM,jou):
     
     
     return point
+"""
+def Utility(Matrice, tailleM,jou,ligne,colonne):
+    points = 0
+    index = -4
+    while(index <= 0):
+        adversaire = False
+        coequipier = 0
+        for i in range((colonne+index),(colonne+index+5)):
+            if((colonne+index)>=0 and (colonne+index+5)<=14):
+                if(Matrice[ligne][i] !=jou and Matrice[ligne][i]!= 0):
+                    adversaire = True
+
+                if(Matrice[ligne][i] == jou):
+                    coequipier += 1
+        if(adversaire == False and (colonne+index)>=0 and (colonne+index+5)<=14):
+            points += 2**coequipier
+
+        index += 1
+    index = -4
+    while(index <= 0):
+        adversaire = False
+        coequipier = 0
+        for i in range((ligne+index),(ligne+index+5)):
+            if((ligne+index)>=0 and (ligne+index+5)<=14):
+                if(Matrice[i][colonne] !=jou and Matrice[i][colonne]!= 0):
+                    adversaire = True
+
+                if(Matrice[i][colonne] == jou):
+                    coequipier += 1
+        if(adversaire == False and (ligne+index)>=0 and (ligne+index+5)<=14):
+            points += 2**coequipier
+
+        index+=1
+    index = 0
+    while(index < 5):
+        adversaire = False
+        coequipier = 0
+        for i in range(-4 + index,1+index):
+            if((ligne+i)>=0 and (colonne+i)>=0 and (ligne+i)<=14 and (colonne+i)<=14):
+                if(Matrice[ligne +i][colonne+i] !=jou and Matrice[ligne+i][colonne +i]!= 0):
+                    adversaire = True
+
+                if(Matrice[ligne+i][colonne+i] == jou):
+                    coequipier += 1
+
+        if(adversaire == False and (ligne+i)>=0 and (colonne+i)>=0 and (ligne+i)<=14 and (colonne+i)<=14):
+            points += 2**coequipier
+
+        index+=1
+    if(TerminalTest(Matrice)==jou):
+      points += 1000
+    index = -4
+    while (index <= 0):
+        defenseur = False
+        nb_adversaires = 0
+        for i in range((colonne + index), (colonne + index + 5)):
+            if ((colonne + index) >= 0 and (colonne + index + 5) <= 14):
+                if (Matrice[ligne][i] != jou and Matrice[ligne][i] != 0):
+                    nb_adversaires += 1
+
+                if (Matrice[ligne][i] == jou):
+                    defenseur = True
+        if (defenseur == False and nb_adversaires == 3):
+            points += 50
+        if (defenseur == False and nb_adversaires == 4):
+            points += 1000
+
+        index += 1
+    index = -4
+    while (index <= 0):
+        defenseur = False
+        nb_adversaires = 0
+        for i in range((ligne + index), (ligne + index + 5)):
+            if ((ligne + index) >= 0 and (ligne + index + 5) <= 14):
+                if (Matrice[i][colonne] != jou and Matrice[i][colonne] != 0):
+                    nb_adversaires += 1
+
+                if (Matrice[i][colonne] == jou):
+                    defenseur = True
+        if (defenseur == False and nb_adversaires == 3):
+            points += 50
+        if (defenseur == False and nb_adversaires == 4):
+            points += 1000
+
+        index += 1
+    index = 0
+    while(index < 5):
+        defenseur = False
+        nb_adversaires = 0
+        for i in range(-4 + index,1+index):
+            if((ligne+i)>=0 and (colonne+i)>=0 and (ligne+i)<=14 and (colonne+i)<=14):
+                if(Matrice[ligne +i][colonne+i] !=jou and Matrice[ligne+i][colonne +i]!= 0):
+                    nb_adversaires +=1
+
+                if(Matrice[ligne+i][colonne+i] == jou):
+                    defenseur = True
+
+        if (defenseur == False and nb_adversaires == 3):
+            points += 50
+        if (defenseur == False and nb_adversaires == 4):
+            points += 1000
+
+        index+=1
+    return points
+
+
 def TerminalTest(Matrice):
+    tailleM = 15
     diags = diagonals(Matrice, tailleM)
     cols = columns(Matrice, tailleM)
     for jou in [1,2]:
@@ -204,7 +311,7 @@ def TerminalTest(Matrice):
                 if(x !=jou):
                     count =0
                 if(count == 5):
-                    return True
+                    return jou
         for elem in cols:
             count = 0
             for x in elem:
@@ -213,7 +320,7 @@ def TerminalTest(Matrice):
                 if(x !=jou):
                     count =0
                 if(count == 5):
-                    return True
+                    return jou
         for elem in Matrice:
             count = 0
             for x in elem:
@@ -222,8 +329,15 @@ def TerminalTest(Matrice):
                 if(x !=jou):
                     count =0
                 if(count == 5):
-                    return True
-    return False
+                    return jou
+    verif = 0
+    for i in range(tailleM):
+        for j in range(TailleM):
+            if(Matrice[i][j] == 0):
+                verif += 1
+    if(verif == 0):return -1
+    return 0
+
 def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour):
     if(TerminalTest(Matrice) or profondeur == prof):
         return Utility(Matrice, tailleM,jou[p])
@@ -283,8 +397,18 @@ def MiniMaxDecision(Matrice, tailleM,var, profondeur,tour):
     print(point)
     return point[0]
 def Main():
-    
-    Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
+
+    Matrice = [[0 for col in range(15)] for row in range(15)]
+    Matrice[4][0] = 1
+    Matrice[4][2] = 1
+    Matrice[4][3] = 2
+    Matrice[4][4] = 1
+    Matrice[4][5] = 2
+    print(Utility(Matrice, 15, 1, 5, 4))
+
+
+
+    """Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
     result = False
     tour = 1
     while result==False:   
@@ -317,6 +441,6 @@ def printMat(Matrice, tailleM):
             print(str(i)+"  "+str([Matrice[i][j] for j in range(tailleM)]))
         if i >10:
             print(str(i)+" "+str([Matrice[i][j] for j in range(tailleM)]))
-    print("+------------------------------------------------+")
+    print("+------------------------------------------------+")"""
 
 Main()
