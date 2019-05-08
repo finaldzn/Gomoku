@@ -89,110 +89,7 @@ def ThreatSearch(Matrice, tailleM, jou):
 def Result(Matrice, i,j,jou):
     Matrice[i][j]=jou
     return Matrice
-"""def Utility(Matrice, tailleM,jou):
-   
-    diags = diagonals(Matrice, tailleM)
-    cols = columns(Matrice, tailleM)
-    point = 0
-    points = 0
-    for elem in diags:
-        count = 0
-       
-        for x in elem:
-            if(x[0] == jou):                
-                count +=1
 
-            if(x[0] !=jou and x[0] !=0):
-                if count ==2:
-                    points= 100
-                if count ==3:
-                    points= 1000
-                if count ==4:
-                    points= 10000000
-                if count ==5:
-                    points= 1000000000
-                count=0
-                
-            if(x[0] !=jou and x[0] ==0):
-                if count ==2:
-                    points= 1000
-                if count ==3:
-                    points= 10000
-                if count ==4:
-                    points= 10000000
-                if count ==5:
-                    points= 1000000000                
-                count=0
-    point = points
-    for elem in cols:
-        count = 0
-        
-        for x in elem:
-            if(x[0] == jou):                
-                count +=1
-                
-            
-            if(x[0] !=jou and x[0] !=0):
-                if count ==2:
-                    points= 100
-                if count ==3:
-                    points= 1000
-                if count ==4:
-                    points= 10000000
-                if count ==5:
-                    points= 1000000000
-                count=0
-                
-            if(x[0] !=jou and x[0] ==0):
-                if count ==2:
-                    points=1000
-                if count ==3:
-                    points= 10000
-                if count ==4:
-                    points= 10000000
-                if count ==5:
-                    points=1000000000               
-                
-                count=0
-    point = point + points        
-    for elem in Matrice:
-        count = 0
-        count2 = 0
-        for x in elem:
-            if(x == jou):                
-                count +=1
-               
-            
-            if(x !=jou and x !=0):
-                if count ==2:
-                    points= 100
-                if count ==3:
-                    points= 1000
-                if count ==4:
-                    points= 10000
-                if count ==5:
-                    points= 100000
-                count=0
-                count2 +=1
-            if(x !=jou  and x ==0):
-                if count ==2:
-                    points=1000
-                if count ==3:
-                    points= 10000
-                if count ==4:
-                    points= 100000
-                if count ==5:
-                    points=1000000
-                
-                count=0
-                
-    point = point + points              
-    if(TerminalTest(Matrice)==True):
-        point+= 100000 
-    
-    
-    return point
-"""
 def Utility(Matrice, tailleM,jou,ligne,colonne):
     points = 0
     index = -4
@@ -332,21 +229,21 @@ def TerminalTest(Matrice):
                     return jou
     verif = 0
     for i in range(tailleM):
-        for j in range(TailleM):
+        for j in range(tailleM):
             if(Matrice[i][j] == 0):
                 verif += 1
     if(verif == 0):return -1
     return 0
 
-def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour):
+def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour,i,j):
     if(TerminalTest(Matrice) or profondeur == prof):
-        return Utility(Matrice, tailleM,jou[p])
+        return Utility(Matrice, tailleM,jou[p],i,j)
     res = Actions(Matrice, tailleM,tour)
     best = []
     
     for x in res:
         
-        mm= MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1))
+        mm= MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1),x[0],x[1])
         if(mm > Beta):
             return mm
         
@@ -356,16 +253,16 @@ def MaxValue(Matrice, tailleM,jou,p, profondeur, Alpha, Beta,tour):
     best = best[0]
     Alpha = best
     return best
-def MinValue(Matrice, tailleM, jou,p, profondeur, Alpha, Beta, tour):
+def MinValue(Matrice, tailleM, jou,p, profondeur, Alpha, Beta, tour,i,j):
     if(TerminalTest(Matrice) or profondeur == prof ):
-        return Utility(Matrice, tailleM,jou[p])
+        return Utility(Matrice, tailleM,jou[p],i,j)
     res = Actions(Matrice, tailleM,tour)
     
     best = []
     
     for x in res:
        
-        mm = MaxValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1))
+        mm = MaxValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2,profondeur+1, Alpha, Beta,copy.deepcopy(tour+1),x[0],x[1])
         if(mm < Alpha):
             return mm
         best.append(mm)
@@ -388,7 +285,7 @@ def MiniMaxDecision(Matrice, tailleM,var, profondeur,tour):
         return threat
     for x in res:        
         
-        mm = MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2, profondeur,math.inf,-math.inf,copy.deepcopy(tour+1))
+        mm = MinValue(Result(copy.deepcopy(Matrice), x[0],x[1],jou[p]),tailleM,jou,(p+1)%2, profondeur,math.inf,-math.inf,copy.deepcopy(tour+1),x[0],x[1])
         
         point.append([mm,x[0],x[1]])
     
@@ -396,19 +293,8 @@ def MiniMaxDecision(Matrice, tailleM,var, profondeur,tour):
     print("POSSSIBILITES : ")
     print(point)
     return point[0]
-def Main():
-
-    Matrice = [[0 for col in range(15)] for row in range(15)]
-    Matrice[4][0] = 1
-    Matrice[4][2] = 1
-    Matrice[4][3] = 2
-    Matrice[4][4] = 1
-    Matrice[4][5] = 2
-    print(Utility(Matrice, 15, 1, 5, 4))
-
-
-
-    """Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
+def Main():  
+    Matrice = [[0 for col in range(tailleM)] for row in range(tailleM)]
     result = False
     tour = 1
     while result==False:   
@@ -441,6 +327,6 @@ def printMat(Matrice, tailleM):
             print(str(i)+"  "+str([Matrice[i][j] for j in range(tailleM)]))
         if i >10:
             print(str(i)+" "+str([Matrice[i][j] for j in range(tailleM)]))
-    print("+------------------------------------------------+")"""
+    print("+------------------------------------------------+")
 
 Main()
