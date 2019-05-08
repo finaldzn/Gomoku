@@ -404,8 +404,7 @@ def Main():
     Matrice[4][3] = 2
     Matrice[4][4] = 1
     Matrice[4][5] = 2
-   # print(Utility(Matrice, 15, 1, 5, 4))
-    print(2**0)
+    print(Utility(Matrice, 15, 1, 5, 4))
 
 
 
